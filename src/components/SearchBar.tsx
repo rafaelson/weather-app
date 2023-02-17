@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { getCode, getName } from "country-list";
+import { WeatherProps } from "../App";
 
-export default function SearchBar() {
+export default function SearchBar(props: WeatherProps) {
   const [searchBarOpacity, setSearchBarOpacity] = useState(0.3);
   const [searchBarValue, setSearchBarValue] = useState("");
 
   const fetchWeather = async (search: string, splitSearch: string[]) => {
     const apiKey = "2d6d5dcae015b67de90985989421c864";
-    let weatherData: Response;
+    let weather: Response;
 
     if (getCode(splitSearch[splitSearch.length - 1])) {
       let country = getCode(splitSearch[splitSearch.length - 1])!;
-      weatherData = await fetch(
+      weather = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${search.replace(
           country,
           ""
@@ -20,7 +21,7 @@ export default function SearchBar() {
       );
     } else if (getName(splitSearch[splitSearch.length - 1])) {
       let country = splitSearch[splitSearch.length - 1];
-      weatherData = await fetch(
+      weather = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${search.replace(
           country,
           ""
@@ -28,12 +29,12 @@ export default function SearchBar() {
         { mode: "cors" }
       );
     } else {
-      weatherData = await fetch(
+      weather = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${search}&appid=${apiKey}`,
         { mode: "cors" }
       );
     }
-    return weatherData;
+    return weather;
   };
 
   const handleValue = (value: string) => {
@@ -49,8 +50,8 @@ export default function SearchBar() {
 
   const handleSubmit = async () => {
     const splitSearchValue = handleValue(searchBarValue);
-    const weatherData = await fetchWeather(searchBarValue, splitSearchValue);
-    console.log(await weatherData.json());
+    const weather = await fetchWeather(searchBarValue, splitSearchValue);
+    console.log(await weather.json());
     setSearchBarValue("");
   };
 

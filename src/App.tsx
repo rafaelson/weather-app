@@ -3,8 +3,24 @@ import "./assets/css/weather-icons.css";
 import SearchBar from "./components/SearchBar";
 import FutureWeatherContainer from "./components/FutureWeatherContainer";
 import CurrentWeatherInfo from "./components/CurrentWeatherInfo";
+import { useState } from "react";
+
+interface Weather {
+  current?: object;
+  future?: object;
+}
+
+export interface WeatherProps {
+  weatherData: Weather;
+  setWeatherData: any;
+}
 
 function App() {
+  const [weatherData, setWeatherData] = useState<Weather>({
+    current: undefined,
+    future: undefined,
+  });
+
   return (
     <div
       css={{
@@ -29,7 +45,7 @@ function App() {
           gap: "40px",
         }}
       >
-        <SearchBar />
+        <SearchBar weatherData={weatherData} setWeatherData={setWeatherData} />
         <CurrentWeatherInfo />
         <FutureWeatherContainer />
       </div>
