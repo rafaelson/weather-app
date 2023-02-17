@@ -4,6 +4,7 @@ import SearchBar from "./components/SearchBar";
 import FutureWeatherContainer from "./components/FutureWeatherContainer";
 import CurrentWeatherInfo from "./components/CurrentWeatherInfo";
 import { useState } from "react";
+import { getCode, getName } from "country-list";
 
 interface Weather {
   current?: object;
@@ -20,6 +21,37 @@ function App() {
     current: undefined,
     future: undefined,
   });
+
+  const fetchWeather = async (search: string, splitSearch: string[]) => {
+    const apiKey = "2d6d5dcae015b67de90985989421c864";
+    let weather: Response;
+
+    if (getCode(splitSearch[splitSearch.length - 1])) {
+      let country = getCode(splitSearch[splitSearch.length - 1])!;
+      weather = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${search.replace(
+          country,
+          ""
+        )},${country}&appid=${apiKey}`,
+        { mode: "cors" }
+      );
+    } else if (getName(splitSearch[splitSearch.length - 1])) {
+      let country = splitSearch[splitSearch.length - 1];
+      weather = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${search.replace(
+          country,
+          ""
+        )},${country}&appid=${apiKey}`,
+        { mode: "cors" }
+      );
+    } else {
+      weather = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${search}&appid=${apiKey}`,
+        { mode: "cors" }
+      );
+    }
+    return weather;
+  };
 
   return (
     <div
@@ -45,7 +77,7 @@ function App() {
           gap: "40px",
         }}
       >
-        <SearchBar weatherData={weatherData} setWeatherData={setWeatherData} />
+        <SearchBar fetchWeather={fetchWeather} />
         <CurrentWeatherInfo />
         <FutureWeatherContainer />
       </div>

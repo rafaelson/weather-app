@@ -1,41 +1,13 @@
 import { useState } from "react";
-import { getCode, getName } from "country-list";
 import { WeatherProps } from "../App";
 
-export default function SearchBar(props: WeatherProps) {
+interface SearchBarProps {
+  fetchWeather: (search: string, splitSearch: string[]) => Promise<Response>;
+}
+
+export default function SearchBar(props: SearchBarProps) {
   const [searchBarOpacity, setSearchBarOpacity] = useState(0.3);
   const [searchBarValue, setSearchBarValue] = useState("");
-
-  const fetchWeather = async (search: string, splitSearch: string[]) => {
-    const apiKey = "2d6d5dcae015b67de90985989421c864";
-    let weather: Response;
-
-    if (getCode(splitSearch[splitSearch.length - 1])) {
-      let country = getCode(splitSearch[splitSearch.length - 1])!;
-      weather = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${search.replace(
-          country,
-          ""
-        )},${country}&appid=${apiKey}`,
-        { mode: "cors" }
-      );
-    } else if (getName(splitSearch[splitSearch.length - 1])) {
-      let country = splitSearch[splitSearch.length - 1];
-      weather = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${search.replace(
-          country,
-          ""
-        )},${country}&appid=${apiKey}`,
-        { mode: "cors" }
-      );
-    } else {
-      weather = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${search}&appid=${apiKey}`,
-        { mode: "cors" }
-      );
-    }
-    return weather;
-  };
 
   const handleValue = (value: string) => {
     let splitSearchValue = value
@@ -50,7 +22,7 @@ export default function SearchBar(props: WeatherProps) {
 
   const handleSubmit = async () => {
     const splitSearchValue = handleValue(searchBarValue);
-    const weather = await fetchWeather(searchBarValue, splitSearchValue);
+    const weather = await props.fetchWeather(searchBarValue, splitSearchValue);
     console.log(await weather.json());
     setSearchBarValue("");
   };
