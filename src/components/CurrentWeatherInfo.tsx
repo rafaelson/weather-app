@@ -1,4 +1,10 @@
-export default function CurrentWeatherInfo() {
+import { Weather } from "../App";
+
+interface CurrentWeatherInfoProps {
+  weatherData: Weather;
+}
+
+export default function CurrentWeatherInfo(props: CurrentWeatherInfoProps) {
   return (
     <div
       css={{

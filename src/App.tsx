@@ -6,14 +6,9 @@ import CurrentWeatherInfo from "./components/CurrentWeatherInfo";
 import { useState } from "react";
 import { getCode, getName } from "country-list";
 
-interface Weather {
+export interface Weather {
   current?: object;
   future?: object;
-}
-
-export interface WeatherProps {
-  weatherData: Weather;
-  setWeatherData: any;
 }
 
 function App() {
@@ -50,7 +45,7 @@ function App() {
         { mode: "cors" }
       );
     }
-    return weather;
+    setWeatherData({ current: await weather.json(), future: undefined });
   };
 
   return (
@@ -77,8 +72,8 @@ function App() {
           gap: "40px",
         }}
       >
-        <SearchBar fetchWeather={fetchWeather} />
-        <CurrentWeatherInfo />
+        <SearchBar fetchWeather={fetchWeather} weatherData={weatherData} />
+        <CurrentWeatherInfo weatherData={weatherData} />
         <FutureWeatherContainer />
       </div>
     </div>

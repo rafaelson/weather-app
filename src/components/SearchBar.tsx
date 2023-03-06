@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { WeatherProps } from "../App";
+import { Weather } from "../App";
 
 interface SearchBarProps {
-  fetchWeather: (search: string, splitSearch: string[]) => Promise<Response>;
+  fetchWeather: (search: string, splitSearch: string[]) => void;
+  weatherData: Weather;
 }
 
 export default function SearchBar(props: SearchBarProps) {
@@ -20,16 +21,15 @@ export default function SearchBar(props: SearchBarProps) {
     return splitSearchValue;
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     const splitSearchValue = handleValue(searchBarValue);
-    const weather = await props.fetchWeather(searchBarValue, splitSearchValue);
-    console.log(await weather.json());
+    props.fetchWeather(searchBarValue, splitSearchValue);
     setSearchBarValue("");
   };
 
-  const handleKeyDown = async (key: string) => {
+  const handleKeyDown = (key: string) => {
     if (key == "Enter" && searchBarValue != "") {
-      await handleSubmit();
+      handleSubmit();
     }
   };
 
