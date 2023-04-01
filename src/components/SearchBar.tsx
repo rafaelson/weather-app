@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Weather } from "../App";
+import { WeatherData } from "../App";
 
 interface SearchBarProps {
   fetchWeather: (search: string, splitSearch: string[]) => void;
-  weatherData: Weather;
+  weatherData: WeatherData;
 }
 
 export default function SearchBar(props: SearchBarProps) {

@@ -5,14 +5,18 @@ import FutureWeatherContainer from "./components/FutureWeatherContainer";
 import CurrentWeatherInfo from "./components/CurrentWeatherInfo";
 import { useState } from "react";
 import { getCode, getName } from "country-list";
+import {
+  Convert,
+  CurrentWeatherObject,
+} from "./interfaces/CurrentWeatherObject";
 
-export interface Weather {
-  current?: object;
-  future?: object;
+export interface WeatherData {
+  current?: CurrentWeatherObject;
+  future?: any;
 }
 
 function App() {
-  const [weatherData, setWeatherData] = useState<Weather>({
+  const [weatherData, setWeatherData] = useState<WeatherData>({
     current: undefined,
     future: undefined,
   });
@@ -45,7 +49,12 @@ function App() {
         { mode: "cors" }
       );
     }
-    setWeatherData({ current: await weather.json(), future: undefined });
+    setWeatherData({
+      current: Convert.toCurrentWeatherObject(
+        JSON.stringify(await weather.json())
+      ),
+      future: undefined,
+    });
   };
 
   return (
