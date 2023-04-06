@@ -1,8 +1,4 @@
-import { Weather } from "../App";
-
-interface CurrentWeatherInfoProps {
-  weatherData: Weather;
-}
+import CurrentWeatherInfoProps from "../interfaces/CurrentWeatherInfoProps";
 
 export default function CurrentWeatherInfo(props: CurrentWeatherInfoProps) {
   return (

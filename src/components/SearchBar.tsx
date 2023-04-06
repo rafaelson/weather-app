@@ -1,10 +1,5 @@
 import { useState } from "react";
-import { WeatherData } from "../App";
-
-interface SearchBarProps {
-  fetchWeather: (search: string, splitSearch: string[]) => void;
-  weatherData: WeatherData;
-}
+import SearchBarProps from "../interfaces/SearchBarProps";
 
 export default function SearchBar(props: SearchBarProps) {
   const [searchBarOpacity, setSearchBarOpacity] = useState(0.3);
