@@ -7,6 +7,7 @@ export default function EmptySearch(props: SearchBarProps) {
       css={{
         display: "flex",
         justifyContent: "center",
+        alignItems: "center",
         height: "180px",
         width: "680px",
         borderRadius: "55px",
