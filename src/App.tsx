@@ -53,12 +53,17 @@ function App() {
         { mode: "cors" }
       );
     }
-    setWeatherData({
-      current: Convert.toCurrentWeatherObject(
-        JSON.stringify(await weather.json())
-      ),
-      future: undefined,
-    });
+
+    if (weather.ok) {
+      setWeatherData({
+        current: Convert.toCurrentWeatherObject(
+          JSON.stringify(await weather.json())
+        ),
+        future: undefined,
+      });
+    } else {
+      alert("Error, please reload the page.");
+    }
   };
 
   return init();
