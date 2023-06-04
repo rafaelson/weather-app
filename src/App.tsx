@@ -2,7 +2,7 @@ import "@fontsource/poppins";
 import "./assets/css/weather-icons.css";
 import { useState } from "react";
 import { getCode, getName } from "country-list";
-import { Convert } from "./interfaces/CurrentWeatherObject";
+import { Convert } from "./interfaces/WeatherObjects";
 import WeatherData from "./interfaces/WeatherData";
 import EmptySearch from "./components/EmptySearch";
 import InitializedApp from "./components/InitializedApp";

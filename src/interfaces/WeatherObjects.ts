@@ -1,36 +1,52 @@
 // To parse this data:
 //
-//   import { Convert, CurrentWeatherObject } from "./file";
+//   import { Convert, FutureWeatherObject, CurrentWeatherObject } from "./file";
 //
+//   const futureWeatherObject = Convert.toFutureWeatherObject(json);
 //   const currentWeatherObject = Convert.toCurrentWeatherObject(json);
 //
 // These functions will throw an error if the JSON doesn't
 // match the expected interface, even if the JSON is valid.
 
-export interface CurrentWeatherObject {
-  coord?: Coord;
-  weather?: Weather[];
-  base?: string;
-  main?: Main;
-  visibility?: number;
-  wind?: Wind;
-  rain?: Rain;
-  clouds?: Clouds;
-  dt?: number;
-  sys?: Sys;
-  timezone?: number;
+export interface FutureWeatherObject {
+  cod?: string;
+  message?: number;
+  cnt?: number;
+  list?: List[];
+  city?: City;
+}
+
+export interface City {
   id?: number;
   name?: string;
-  cod?: number;
+  coord?: Coord;
+  country?: string;
+  population?: number;
+  timezone?: number;
+  sunrise?: number;
+  sunset?: number;
+}
+
+export interface Coord {
+  lat?: number;
+  lon?: number;
+}
+
+export interface List {
+  dt?: number;
+  main?: Main;
+  weather?: Weather[];
+  clouds?: Clouds;
+  wind?: Wind;
+  visibility?: number;
+  pop?: number;
+  rain?: ListRain;
+  sys?: ListSys;
+  dtTxt?: Date;
 }
 
 export interface Clouds {
   all?: number;
-}
-
-export interface Coord {
-  lon?: number;
-  lat?: number;
 }
 
 export interface Main {
@@ -39,21 +55,18 @@ export interface Main {
   tempMin?: number;
   tempMax?: number;
   pressure?: number;
-  humidity?: number;
   seaLevel?: number;
   grndLevel?: number;
+  humidity?: number;
+  tempKf?: number;
 }
 
-export interface Rain {
-  the1H?: number;
+export interface ListRain {
+  the3H?: number;
 }
 
-export interface Sys {
-  type?: number;
-  id?: number;
-  country?: string;
-  sunrise?: number;
-  sunset?: number;
+export interface ListSys {
+  pod?: string;
 }
 
 export interface Weather {
@@ -69,9 +82,46 @@ export interface Wind {
   gust?: number;
 }
 
+export interface CurrentWeatherObject {
+  coord?: Coord;
+  weather?: Weather[];
+  base?: string;
+  main?: Main;
+  visibility?: number;
+  wind?: Wind;
+  rain?: CurrentWeatherObjectRain;
+  clouds?: Clouds;
+  dt?: number;
+  sys?: CurrentWeatherObjectSys;
+  timezone?: number;
+  id?: number;
+  name?: string;
+  cod?: number;
+}
+
+export interface CurrentWeatherObjectRain {
+  the1H?: number;
+}
+
+export interface CurrentWeatherObjectSys {
+  type?: number;
+  id?: number;
+  country?: string;
+  sunrise?: number;
+  sunset?: number;
+}
+
 // Converts JSON strings to/from your types
 // and asserts the results of JSON.parse at runtime
 export class Convert {
+  public static toFutureWeatherObject(json: string): FutureWeatherObject {
+    return cast(JSON.parse(json), r("FutureWeatherObject"));
+  }
+
+  public static futureWeatherObjectToJson(value: FutureWeatherObject): string {
+    return JSON.stringify(uncast(value, r("FutureWeatherObject")), null, 2);
+  }
+
   public static toCurrentWeatherObject(json: string): CurrentWeatherObject {
     return cast(JSON.parse(json), r("CurrentWeatherObject"));
   }
@@ -266,33 +316,52 @@ function r(name: string) {
 }
 
 const typeMap: any = {
-  CurrentWeatherObject: o(
+  FutureWeatherObject: o(
     [
-      { json: "coord", js: "coord", typ: u(undefined, r("Coord")) },
-      { json: "weather", js: "weather", typ: u(undefined, a(r("Weather"))) },
-      { json: "base", js: "base", typ: u(undefined, "") },
-      { json: "main", js: "main", typ: u(undefined, r("Main")) },
-      { json: "visibility", js: "visibility", typ: u(undefined, 0) },
-      { json: "wind", js: "wind", typ: u(undefined, r("Wind")) },
-      { json: "rain", js: "rain", typ: u(undefined, r("Rain")) },
-      { json: "clouds", js: "clouds", typ: u(undefined, r("Clouds")) },
-      { json: "dt", js: "dt", typ: u(undefined, 0) },
-      { json: "sys", js: "sys", typ: u(undefined, r("Sys")) },
-      { json: "timezone", js: "timezone", typ: u(undefined, 0) },
+      { json: "cod", js: "cod", typ: u(undefined, "") },
+      { json: "message", js: "message", typ: u(undefined, 0) },
+      { json: "cnt", js: "cnt", typ: u(undefined, 0) },
+      { json: "list", js: "list", typ: u(undefined, a(r("List"))) },
+      { json: "city", js: "city", typ: u(undefined, r("City")) },
+    ],
+    false
+  ),
+  City: o(
+    [
       { json: "id", js: "id", typ: u(undefined, 0) },
       { json: "name", js: "name", typ: u(undefined, "") },
-      { json: "cod", js: "cod", typ: u(undefined, 0) },
+      { json: "coord", js: "coord", typ: u(undefined, r("Coord")) },
+      { json: "country", js: "country", typ: u(undefined, "") },
+      { json: "population", js: "population", typ: u(undefined, 0) },
+      { json: "timezone", js: "timezone", typ: u(undefined, 0) },
+      { json: "sunrise", js: "sunrise", typ: u(undefined, 0) },
+      { json: "sunset", js: "sunset", typ: u(undefined, 0) },
+    ],
+    false
+  ),
+  Coord: o(
+    [
+      { json: "lat", js: "lat", typ: u(undefined, 3.14) },
+      { json: "lon", js: "lon", typ: u(undefined, 3.14) },
+    ],
+    false
+  ),
+  List: o(
+    [
+      { json: "dt", js: "dt", typ: u(undefined, 0) },
+      { json: "main", js: "main", typ: u(undefined, r("Main")) },
+      { json: "weather", js: "weather", typ: u(undefined, a(r("Weather"))) },
+      { json: "clouds", js: "clouds", typ: u(undefined, r("Clouds")) },
+      { json: "wind", js: "wind", typ: u(undefined, r("Wind")) },
+      { json: "visibility", js: "visibility", typ: u(undefined, 0) },
+      { json: "pop", js: "pop", typ: u(undefined, 3.14) },
+      { json: "rain", js: "rain", typ: u(undefined, r("ListRain")) },
+      { json: "sys", js: "sys", typ: u(undefined, r("ListSys")) },
+      { json: "dt_txt", js: "dtTxt", typ: u(undefined, Date) },
     ],
     false
   ),
   Clouds: o([{ json: "all", js: "all", typ: u(undefined, 0) }], false),
-  Coord: o(
-    [
-      { json: "lon", js: "lon", typ: u(undefined, 3.14) },
-      { json: "lat", js: "lat", typ: u(undefined, 3.14) },
-    ],
-    false
-  ),
   Main: o(
     [
       { json: "temp", js: "temp", typ: u(undefined, 3.14) },
@@ -300,23 +369,15 @@ const typeMap: any = {
       { json: "temp_min", js: "tempMin", typ: u(undefined, 3.14) },
       { json: "temp_max", js: "tempMax", typ: u(undefined, 3.14) },
       { json: "pressure", js: "pressure", typ: u(undefined, 0) },
-      { json: "humidity", js: "humidity", typ: u(undefined, 0) },
       { json: "sea_level", js: "seaLevel", typ: u(undefined, 0) },
       { json: "grnd_level", js: "grndLevel", typ: u(undefined, 0) },
+      { json: "humidity", js: "humidity", typ: u(undefined, 0) },
+      { json: "temp_kf", js: "tempKf", typ: u(undefined, 3.14) },
     ],
     false
   ),
-  Rain: o([{ json: "1h", js: "the1H", typ: u(undefined, 3.14) }], false),
-  Sys: o(
-    [
-      { json: "type", js: "type", typ: u(undefined, 0) },
-      { json: "id", js: "id", typ: u(undefined, 0) },
-      { json: "country", js: "country", typ: u(undefined, "") },
-      { json: "sunrise", js: "sunrise", typ: u(undefined, 0) },
-      { json: "sunset", js: "sunset", typ: u(undefined, 0) },
-    ],
-    false
-  ),
+  ListRain: o([{ json: "3h", js: "the3H", typ: u(undefined, 3.14) }], false),
+  ListSys: o([{ json: "pod", js: "pod", typ: u(undefined, "") }], false),
   Weather: o(
     [
       { json: "id", js: "id", typ: u(undefined, 0) },
@@ -331,6 +392,47 @@ const typeMap: any = {
       { json: "speed", js: "speed", typ: u(undefined, 3.14) },
       { json: "deg", js: "deg", typ: u(undefined, 0) },
       { json: "gust", js: "gust", typ: u(undefined, 3.14) },
+    ],
+    false
+  ),
+  CurrentWeatherObject: o(
+    [
+      { json: "coord", js: "coord", typ: u(undefined, r("Coord")) },
+      { json: "weather", js: "weather", typ: u(undefined, a(r("Weather"))) },
+      { json: "base", js: "base", typ: u(undefined, "") },
+      { json: "main", js: "main", typ: u(undefined, r("Main")) },
+      { json: "visibility", js: "visibility", typ: u(undefined, 0) },
+      { json: "wind", js: "wind", typ: u(undefined, r("Wind")) },
+      {
+        json: "rain",
+        js: "rain",
+        typ: u(undefined, r("CurrentWeatherObjectRain")),
+      },
+      { json: "clouds", js: "clouds", typ: u(undefined, r("Clouds")) },
+      { json: "dt", js: "dt", typ: u(undefined, 0) },
+      {
+        json: "sys",
+        js: "sys",
+        typ: u(undefined, r("CurrentWeatherObjectSys")),
+      },
+      { json: "timezone", js: "timezone", typ: u(undefined, 0) },
+      { json: "id", js: "id", typ: u(undefined, 0) },
+      { json: "name", js: "name", typ: u(undefined, "") },
+      { json: "cod", js: "cod", typ: u(undefined, 0) },
+    ],
+    false
+  ),
+  CurrentWeatherObjectRain: o(
+    [{ json: "1h", js: "the1H", typ: u(undefined, 3.14) }],
+    false
+  ),
+  CurrentWeatherObjectSys: o(
+    [
+      { json: "type", js: "type", typ: u(undefined, 0) },
+      { json: "id", js: "id", typ: u(undefined, 0) },
+      { json: "country", js: "country", typ: u(undefined, "") },
+      { json: "sunrise", js: "sunrise", typ: u(undefined, 0) },
+      { json: "sunset", js: "sunset", typ: u(undefined, 0) },
     ],
     false
   ),
