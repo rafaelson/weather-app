@@ -1,6 +1,34 @@
 import FutureWeatherDay from "./FutureWeatherDay";
+import FutureWeatherProps from "../interfaces/FutureWeatherProps";
+import { useState } from "react";
 
-export default function FutureWeatherContainer() {
+export default function FutureWeatherContainer(props: FutureWeatherProps) {
+  const [buttonState, setButtonState] = useState("Hourly");
+
+  const returnWeathers = () => {
+    const weathers = [];
+
+    if (buttonState === "Hourly") {
+      for (let i = 0; i < 5; i++) {
+        weathers[i] = (
+          <FutureWeatherDay
+            key={i}
+            weatherData={props.weatherData.future?.list![i]!}
+            forecastType="hourly"
+          />
+        );
+      }
+    } else {
+    }
+
+    return weathers;
+  };
+
+  const interchangeButtonState = () => {
+    if (buttonState === "Hourly") setButtonState("Daily");
+    else setButtonState("Hourly");
+  };
+
   return (
     <div>
       <div css={{ display: "flex", flexDirection: "row-reverse" }}>
@@ -13,8 +41,9 @@ export default function FutureWeatherContainer() {
             fontFamily: "Poppins",
             borderWidth: "1px",
           }}
+          onClick={interchangeButtonState}
         >
-          Hourly
+          {buttonState}
         </button>
         {/* <button
             css={{
@@ -30,11 +59,12 @@ export default function FutureWeatherContainer() {
           </button> */}
       </div>
       <div css={{ display: "flex" }}>
+        {/* <FutureWeatherDay />
         <FutureWeatherDay />
         <FutureWeatherDay />
         <FutureWeatherDay />
-        <FutureWeatherDay />
-        <FutureWeatherDay />
+        <FutureWeatherDay /> */}
+        {returnWeathers()}
       </div>
     </div>
   );

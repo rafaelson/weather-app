@@ -33,7 +33,7 @@ export default function InitializedApp(props: SearchBarProps) {
           weatherData={props.weatherData}
         />
         <CurrentWeatherInfo weatherData={props.weatherData} />
-        <FutureWeatherContainer />
+        <FutureWeatherContainer weatherData={props.weatherData} />
       </div>
     </div>
   );

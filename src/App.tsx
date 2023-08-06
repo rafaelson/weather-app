@@ -28,11 +28,19 @@ function App() {
   const fetchWeather = async (search: string, splitSearch: string[]) => {
     const apiKey = "2d6d5dcae015b67de90985989421c864";
     let weather: Response;
+    let futureWeather: Response;
 
     if (getCode(splitSearch[splitSearch.length - 1])) {
       let country = getCode(splitSearch[splitSearch.length - 1])!;
       weather = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${search.replace(
+          country,
+          ""
+        )},${country}&appid=${apiKey}`,
+        { mode: "cors" }
+      );
+      futureWeather = await fetch(
+        `https://api.openweathermap.org/data/2.5/forecast?q=${search.replace(
           country,
           ""
         )},${country}&appid=${apiKey}`,
@@ -47,9 +55,20 @@ function App() {
         )},${country}&appid=${apiKey}`,
         { mode: "cors" }
       );
+      futureWeather = await fetch(
+        `https://api.openweathermap.org/data/2.5/forecast?q=${search.replace(
+          country,
+          ""
+        )},${country}&appid=${apiKey}`,
+        { mode: "cors" }
+      );
     } else {
       weather = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${search}&appid=${apiKey}`,
+        { mode: "cors" }
+      );
+      futureWeather = await fetch(
+        `https://api.openweathermap.org/data/2.5/forecast?q=${search}&appid=${apiKey}`,
         { mode: "cors" }
       );
     }
@@ -59,7 +78,9 @@ function App() {
         current: Convert.toCurrentWeatherObject(
           JSON.stringify(await weather.json())
         ),
-        future: undefined,
+        future: Convert.toFutureWeatherObject(
+          JSON.stringify(await futureWeather.json())
+        ),
       });
     } else {
       alert("Error, please reload the page.");
