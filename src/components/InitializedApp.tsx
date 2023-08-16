@@ -46,6 +46,10 @@ export default function InitializedApp(props: SearchBarProps) {
           weatherData={props.weatherData}
           checkIfNight={checkIfNight}
         />
+        <FutureWeatherContainer
+          weatherData={props.weatherData}
+          checkIfNight={checkIfNight}
+        />
       </div>
     </div>
   );

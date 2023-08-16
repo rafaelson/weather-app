@@ -15,6 +15,7 @@ export default function FutureWeatherContainer(props: FutureWeatherProps) {
             key={i}
             weatherData={props.weatherData.future?.list![i]!}
             forecastType="hourly"
+            timeOfDay={props.checkIfNight()}
           />
         );
       }

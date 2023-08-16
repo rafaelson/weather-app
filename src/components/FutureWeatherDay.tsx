@@ -25,7 +25,9 @@ export default function FutureWeatherDay(props: FutureWeatherDayProps) {
       <span>{kelvinToCelsius(props.weatherData.main?.temp!)}ºC</span>
       <span
         css={{ fontSize: "50px" }}
-        className={`wi wi-owm-night-${props.weatherData.weather![0].id}`}
+        className={`wi wi-owm-${props.timeOfDay}-${
+          props.weatherData.weather![0].id
+        }`}
       ></span>
       <span>
         Rain:{" "}
