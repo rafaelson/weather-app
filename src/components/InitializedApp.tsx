@@ -4,6 +4,16 @@ import CurrentWeatherInfo from "./CurrentWeatherInfo";
 import FutureWeatherContainer from "./FutureWeatherContainer";
 
 export default function InitializedApp(props: SearchBarProps) {
+  const checkIfNight = () => {
+    const sunriseUnix = props.weatherData.current?.sys?.sunrise!;
+    const sunsetUnix = props.weatherData.current?.sys?.sunset!;
+    const currentUnixTime = Math.floor(new Date().getTime() / 1000);
+
+    if (currentUnixTime < sunsetUnix && currentUnixTime > sunriseUnix) {
+      return "day";
+    } else return "night";
+  };
+
   return (
     <div
       css={{
@@ -32,8 +42,10 @@ export default function InitializedApp(props: SearchBarProps) {
           fetchWeather={props.fetchWeather}
           weatherData={props.weatherData}
         />
-        <CurrentWeatherInfo weatherData={props.weatherData} />
-        <FutureWeatherContainer weatherData={props.weatherData} />
+        <CurrentWeatherInfo
+          weatherData={props.weatherData}
+          checkIfNight={checkIfNight}
+        />
       </div>
     </div>
   );

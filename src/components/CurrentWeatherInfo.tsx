@@ -4,15 +4,6 @@ export default function CurrentWeatherInfo(props: CurrentWeatherInfoProps) {
   const kelvinToCelsius = (kelvinTemp: number) =>
     Math.round(kelvinTemp - 273.15);
   const msToKmh = (ms: number) => Math.round(ms * 3.6);
-  const checkIfNight = () => {
-    const sunriseUnix = props.weatherData.current?.sys?.sunrise!;
-    const sunsetUnix = props.weatherData.current?.sys?.sunset!;
-    const currentUnixTime = Math.floor(new Date().getTime() / 1000);
-
-    if (currentUnixTime < sunsetUnix && currentUnixTime > sunriseUnix) {
-      return "day";
-    } else return "night";
-  };
 
   return (
     <div
@@ -42,7 +33,7 @@ export default function CurrentWeatherInfo(props: CurrentWeatherInfoProps) {
       <span css={{ fontWeight: 500, fontSize: "20px", lineHeight: "30px" }}>
         <span
           css={{ fontSize: "30px", marginRight: "10px" }}
-          className={`wi wi-owm-${checkIfNight()}-${
+          className={`wi wi-owm-${props.checkIfNight()}-${
             props.weatherData.current?.weather![0].id
           }`}
         ></span>
